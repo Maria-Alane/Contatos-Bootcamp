@@ -1,8 +1,10 @@
 package com.chaveirinho.contatosbootcamp
 
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.ContactsContract
 import androidx.core.app.ActivityCompat
 
 class MainActivity : AppCompatActivity() {
@@ -32,8 +34,26 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == REQUEST_CONTACT) setContacts()
     }
 
+    @SuppressLint("Range")
     private fun setContacts() {
-        TODO("Not yet implemented")
+        val contactList: ArrayList<Contact> = ArrayList()
+
+        val cursor = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+        null,
+        null,
+        null,
+        null)
+
+        if (cursor != null){
+            while (cursor.moveToNext()){
+                contactList.add(Contact(
+                    cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)),
+                    cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
+                ))
+            }
+            cursor.close()
+        }
+
     }
 
 }
